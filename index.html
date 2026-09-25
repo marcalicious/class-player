@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Class Video Player</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;color:#fff;font-family:"Segoe UI",Arial,sans-serif}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0}
+  .ready{display:flex;height:100%;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center}
+  .ready b{font-size:40px;color:#3CCB7F}
+  .ready span{font-size:20px;color:#aaa}
+</style>
+</head>
+<body>
+<script>
+/* A plain YouTube player. Nothing else lives on this page.
+   Use:  ?v=VIDEO_ID            the 11-character id after "watch?v=" in a YouTube link
+         &start=30              start at 30 seconds          (optional)
+         &end=75                stop at 75 seconds           (optional)          */
+(function(){
+  var q = new URLSearchParams(location.search);
+  var v = q.get("v") || "";
+  var num = function(k){ var n = parseInt(q.get(k), 10); return (n >= 0 && n < 100000) ? n : null; };
+
+  if(!/^[A-Za-z0-9_-]{11}$/.test(v)){
+    document.body.innerHTML = '<div class="ready"><b>✓ Player is ready</b><span>Add ?v=VIDEO_ID to the address to play a video.</span></div>';
+    return;
+  }
+  var p = new URLSearchParams({rel:"0", modestbranding:"1", playsinline:"1", autoplay:"1"});
+  if(num("start") !== null) p.set("start", num("start"));
+  if(num("end") !== null)   p.set("end", num("end"));
+
+  var f = document.createElement("iframe");
+  f.src = "https://www.youtube.com/embed/" + v + "?" + p.toString();
+  f.allow = "autoplay; encrypted-media; fullscreen; picture-in-picture";
+  f.allowFullscreen = true;
+  f.referrerPolicy = "strict-origin-when-cross-origin";
+  document.body.appendChild(f);
+})();
+</script>
+</body>
+</html>
